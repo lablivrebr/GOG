@@ -103,6 +103,7 @@
 			<url-pattern>/pages/erro/*</url-pattern>
 			<url-pattern>/pages/externo/*</url-pattern>
 			<url-pattern>/login</url-pattern>
+			<url-pattern>/oauthCallback</url-pattern>
 			<url-pattern>/logout</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
