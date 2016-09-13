@@ -62,7 +62,9 @@
 			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+		
+		
+		
 		<!-- Import the JPA API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
 		<dependency>
@@ -201,7 +203,45 @@
 		    <artifactId>jstl</artifactId>
 		    <version>1.2</version>
 		</dependency>
-
+		
+		<!--  GOOGLE OAUTH -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client</artifactId>
+			<version>1.20.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.apis</groupId>
+		    <artifactId>google-api-services-oauth2</artifactId>
+		    <version>v2-rev118-1.22.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.google.oauth-client</groupId>
+		  <artifactId>google-oauth-client</artifactId>
+		  <version>1.20.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.google.oauth-client</groupId>
+		  <artifactId>google-oauth-client-servlet</artifactId>
+		  <version>1.20.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.api-client</groupId>
+		    <artifactId>google-api-client-servlet</artifactId>
+		    <version>1.22.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.http-client</groupId>
+		    <artifactId>google-http-client-jackson</artifactId>
+		    <version>1.20.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.oauth-client</groupId>
+		    <artifactId>google-oauth-client-java6</artifactId>
+		    <version>1.20.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

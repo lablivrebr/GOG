@@ -4,3 +4,4 @@ src/main/java/br/com/xti/ouvidoria/model/*_.java
 .project
 .settings/
 .tern-project
+/bin/
