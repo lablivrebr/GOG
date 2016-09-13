@@ -29,7 +29,6 @@
 		})
 	</script>
 </head>
-
 <body>
 	<div class="global">
 		<!-- BARRA DO GOVERNO -->
@@ -86,6 +85,13 @@
 												<span class="ui-button-text">ACESSAR</span>
 											</button>
 										</div>
+										<div class="dadosCadastro1">
+											<button type="button" style="border: none;"
+													class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+													onclick="window.location.href='${context}/oauth2Authorization'">
+												<span class="ui-button-text">ID.CULTURA</span>
+											</button>
+										</div>
 									</div>
 									<div class="cadastroUsuariosOuvidoria">
 										Não é cadastrado?
@@ -103,7 +109,7 @@
 							</div>
 							<br />
 							<p>
-								À Ouvidoria compete receber, examinar e encaminhar as
+								À Ouvidoria compete receber, examinar e encaminhar as
 								reclamações, sugestões, elogios, denúncias e solicitação de
 								informações, especialmente aquelas que demandam maior urgência.
 							</p>
