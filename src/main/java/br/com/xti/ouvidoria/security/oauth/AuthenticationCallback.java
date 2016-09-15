@@ -73,8 +73,15 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 		
 		//PasswordUtils.getMD5("abcd123456").toUpperCase();
 		
-		// Verificar permissões
-		//objAuthorizationCodeFlow.
+		HttpTransport transport = this.objAuthorizationCodeFlow.getTransport();
+		HttpRequestFactory requestFactory = transport.createRequestFactory(credential);
+		
+		GenericUrl url = new GenericUrl(USER_INFO_URL);
+		HttpRequest userInfoRequest = requestFactory.buildGetRequest(url);
+		String userIdentity = userInfoRequest.execute().parseAsString();
+		
+		
+		
 		request.login("root", "123456");
 		
 	    response.sendRedirect("/GOG/pages/manifestacao/listarmanifestacoes.xhtml");
