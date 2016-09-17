@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.json.JSONObject;
+
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeResponseUrl;
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
@@ -39,6 +41,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
 import br.com.xti.ouvidoria.controller.MensagemFaceUtil;
+import br.com.xti.ouvidoria.dao.UsuarioDAO;
+import br.com.xti.ouvidoria.model.TbUsuario;
 import br.com.xti.ouvidoria.util.JSFUtils;
 import br.com.xti.ouvidoria.util.PasswordUtils;
 
@@ -58,7 +62,7 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 	private static final String USER_INFO_URL = "http://id.cultura.gov.br/api/v1/person.json";
 	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	
+
 	AuthorizationCodeFlow objAuthorizationCodeFlow = null;
 
 	@Override
@@ -80,11 +84,34 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 		HttpRequest userInfoRequest = requestFactory.buildGetRequest(url);
 		String userIdentity = userInfoRequest.execute().parseAsString();
 		
+		request.getSession().setAttribute("oauthUserIdentity", userIdentity);
 		
+		String oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
 		
-		request.login("root", "123456");
+		try {
+			
+			JSONObject json = new JSONObject(oauthUserIdentity);
+			String email = json.get("email").toString();
+			UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+			TbUsuario objTbUsuario = objUsuarioDAO.findByEmail(email);
+			
+			if(objTbUsuario == null) {
+				request.login(objTbUsuario.getNmUsuario(), objTbUsuario.getNmSenha());
+				response.sendRedirect("/GOG/pages/manifestacao/listarmanifestacoes.xhtml");
+			} else {
+				// Redirecionamento do usuário que ainda não possui cadastro no sistema para que preencha os dados adicionais.
+				// @todo: Quando for via OAuth, sugiro que os dados já carregados estejam como readOnly, para não permitir alterar. 
+				//        Somente na alteração dos dados permitiria a edição desses dados que já estão vindo do Host OAuth2.
+				// @todo: Os campos Login e senha, devem ser ocultos nesse cadastro.
+				
+				request.setAttribute("full_name", json.get("username").toString());
+				request.setAttribute("email", email);
+				response.sendRedirect("/GOG/pages/externo/cadastrarManifestante.xhtml");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-	    response.sendRedirect("/GOG/pages/manifestacao/listarmanifestacoes.xhtml");
 	  }
 
 	@Override
@@ -102,14 +129,15 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 
 	@Override
 	protected AuthorizationCodeFlow initializeFlow() throws IOException {
-		
+
 		try {
 
 			objAuthorizationCodeFlow = new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
 					new NetHttpTransport(), new JacksonFactory(), new GenericUrl(TOKEN_SERVER_URL),
 					new BasicAuthentication(CLIENT_ID, CLIENT_SECRET), CLIENT_ID, AUTHORIZATION_SERVER_URL)
-					.setCredentialDataStore(StoredCredential.getDefaultDataStore(new FileDataStoreFactory(new File("oauth2StorageFolder"))))
-					.setScopes((Collection<String>) SCOPE).build();
+							.setCredentialDataStore(StoredCredential
+									.getDefaultDataStore(new FileDataStoreFactory(new File("oauth2StorageFolder"))))
+							.setScopes((Collection<String>) SCOPE).build();
 		} catch (TokenResponseException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
