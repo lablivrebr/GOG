@@ -58,15 +58,23 @@ public class UsuarioDAO extends AbstractDAO<TbUsuario> {
         return listaUsuarios;
     }
 
-    public TbUsuario login(String login, String password) throws Exception {
+    public TbUsuario login(String login, String password, boolean isCriptografedPassword) throws Exception {
         String select = "SELECT t FROM TbUsuario t WHERE t.nmLogin = :nmLogin and t.nmSenha = :nmSenha";
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("nmLogin", login);
-        map.put("nmSenha", PasswordUtils.getMD5(password).toUpperCase());
+        
+        if(!isCriptografedPassword) {
+        	password = PasswordUtils.getMD5(password).toUpperCase();
+        }
+        map.put("nmSenha", password);
         TbUsuario tbUsuario = selectObject(select, map);
 
         return tbUsuario;
+    }
+    
+    public TbUsuario login(String login, String password) throws Exception {
+    	return login(login, password, false);
     }
 
     public TbUsuario findByEmail(String eeEmail) throws NonUniqueResultException {
