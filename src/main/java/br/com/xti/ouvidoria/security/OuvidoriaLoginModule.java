@@ -23,9 +23,13 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jboss.dmr.JSONParser;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.spi.UsernamePasswordLoginModule;
+import org.primefaces.json.JSONObject;
+
+import com.google.api.client.auth.oauth2.Credential;
 
 import br.com.xti.ouvidoria.dao.ManifestacaoDAO;
 import br.com.xti.ouvidoria.dao.PerfilDAO;
@@ -91,9 +95,19 @@ public class OuvidoriaLoginModule extends UsernamePasswordLoginModule {
 	private boolean doLogin(String login, String password) {
 		boolean logged = Boolean.FALSE;
 		try {
-			// Tenta logar um usuário (login e senha)
-            user = usuarioDAO.login(login, password);
-            if (user != null) {
+			
+			String oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
+			
+			if (!oauthUserIdentity.isEmpty()) {
+				JSONObject json = new JSONObject(oauthUserIdentity);
+				String email = json.get("email").toString();
+				user = usuarioDAO.findByEmail(email);
+			} else {
+				// Tenta logar um usuário (login e senha)
+	            user = usuarioDAO.login(login, password, false);
+			}
+			
+			if (user != null) {
                 if (user.isAtivoOuNovaSenha()) {
                     profile = EnumHelper.getFuncaoUsuarioEnum(user.getTpFuncao());
                     if (profile == null) {
