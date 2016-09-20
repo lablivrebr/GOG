@@ -93,10 +93,12 @@
 											</button>
 										</div>
 									</div>
+									<!-- 
 									<div class="cadastroUsuariosOuvidoria">
 										Não é cadastrado?
 										<a href="${context}/pages/externo/cadastrarManifestante.xhtml">Cadastre-se</a>
 									</div>
+									 -->
 								</div>
 							</div>
 						</div>
