@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition template="./template.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:p="http://primefaces.org/ui"
@@ -14,21 +14,21 @@
 			<p:menuitem value="Administrar Manifestação" />
 		</p:breadCrumb>
 	</ui:define>
-
 	<ui:define name="content">
+		
 		<p:panel style="width: 1180px; margin: 0 auto">
 			<f:facet name="header">
-				<h:outputLabel value="Novo Usuário" />
+				<h:outputLabel value="Dados Complementares" />
 			</f:facet>
 			<h:form id="frmNovoUsuarios">
 				<p:fieldset legend="Dados do usuário">
 					<p:messages id="messages" showDetail="true" />
 					<p:panelGrid columns="2" style="width: 100%">
 						<h:outputLabel value="Nome:" />
-						<p:inputText value="#{mBUsuario.usuarioExterno.nmUsuario}"
+						<p:inputText readonly="true" value="#{mBUsuario.usuarioExterno.nmUsuario}"
 							required="true" size="60" requiredMessage="Informe o Nome" />
 						<h:outputLabel value="Email:" />
-						<p:inputText value="#{mBUsuario.usuarioExterno.eeEmail}"
+						<p:inputText readonly="true" value="#{mBUsuario.usuarioExterno.eeEmail}"
 							required="true" size="40" requiredMessage="Informe o E-mail">
 							<f:validator binding="#{emailValidator}" />
 							<!--                            <f:validator binding="{emailCadastradoValidator}" />-->
@@ -37,31 +37,21 @@
 						<p:inputMask value="#{mBUsuario.usuarioExterno.numTelefone}"
 							mask="(99)99999999?9" required="true"
 							requiredMessage="Informe o Telefone" />
-						<h:outputLabel value="Login:" />
+						<h:outputLabel readonly="true" value="Login:" />
 						<p:inputText value="#{mBUsuario.usuarioExterno.nmLogin}"
 							required="true" requiredMessage="Informe a Login">
 							<f:validator binding="#{usuarioCadastradoValidator}" />
 						</p:inputText>
-						<h:outputLabel value="Senha:" />
-						<p:password required="true"
-							value="#{mBUsuario.usuarioExterno.nmSenha}"
-							requiredMessage="Informe a Senha" match="idSenha"
-							validatorMessage="Senha não confere" />
-						<h:outputLabel value="Confirmar Senha:" />
-						<p:password id="idSenha"
-							value="#{mBUsuario.usuarioExterno.nmSenha}" required="true"
-							requiredMessage="Informe a Senha" />
 					</p:panelGrid>
 					<p:panelGrid style="width: 100%">
 						<p:row>
 							<p:column style="text-align: center; width: 100%"
 								styleClass="ui-widget-header">
 								<p:commandButton id="cbNovoSalvar" value="Salvar"
-									actionListener="#{mBUsuario.cadastrarExterno}" ajax="false">
+									actionListener="#{mBUsuario.cadastrarOAuth}" ajax="false">
 									<p:resetInput target="frmNovoUsuarios" />
 								</p:commandButton>
-								<a href="#{facesContext.externalContext.requestContextPath}/">[Já
-									sou cadastrado]</a>
+								<!-- <a href="#{facesContext.externalContext.requestContextPath}/">[Já sou cadastrado]</a> -->
 							</p:column>
 						</p:row>
 					</p:panelGrid>
