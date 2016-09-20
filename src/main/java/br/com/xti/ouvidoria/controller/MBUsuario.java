@@ -10,10 +10,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.model.DualListModel;
+
+import com.google.common.base.Predicate;
 
 import br.com.xti.ouvidoria.dao.PerfilDAO;
 import br.com.xti.ouvidoria.dao.UnidadeDAO;
@@ -82,6 +86,7 @@ public class MBUsuario implements Serializable {
     @PostConstruct
     public void init() {
         limpar();
+        this.definirPropriedadesPorRedirecionamento();
     }
 
     public List<TbUsuario> getTodosInternos() {
@@ -128,6 +133,22 @@ public class MBUsuario implements Serializable {
             // Registra os perfis selecionados
             List<TbPerfil> perfisSelecionados = perfisNovo.getTarget();
             perfilDAO.atualizarPerfis(usuarioNovo, perfisSelecionados);
+            MensagemFaceUtil.info("Inclusão realizada com sucesso.", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            MensagemFaceUtil.erro("Erro", "Ocorreu um erro. Entre em contato com o administrador do sistema.");
+        }
+        limpar();
+    }
+    
+    public void cadastrarOAuth(ActionEvent actionEvent) {
+        try {
+            usuarioExterno.setAtivo(Boolean.TRUE);
+            usuarioExterno.setTpUsuario(TipoUsuarioEnum.EXTERNO.getId());
+            usuarioExterno.setTpFuncao(FuncaoUsuarioEnum.MANIFESTANTE.getId());
+            usuarioExterno.setNmSenha(PasswordUtils.getMD5("oauthNopass :)").toUpperCase());
+            usuarioDAO.create(usuarioExterno);
+
             MensagemFaceUtil.info("Inclusão realizada com sucesso.", "");
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,6 +255,10 @@ public class MBUsuario implements Serializable {
 			list.add(0, StatusUsuarioEnum.ATIVO);
     	
     	return list;
+    }
+    
+    public void onLoadForm() {
+    	
     }
 
     public void onChangeUnidadeNovo() {
@@ -342,5 +367,21 @@ public class MBUsuario implements Serializable {
 
     public void setFuncaoSelecionada(FuncaoUsuarioEnum funcaoSelecionada) {
         this.funcaoSelecionada = funcaoSelecionada;
+    }
+    
+    public void definirPropriedadesPorRedirecionamento() {
+    	HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    	
+    	if(this.usuarioExterno.getNmUsuario() == null && request.getAttribute("nmUsuario") != null) {
+    		this.usuarioExterno.setNmUsuario(request.getAttribute("nmUsuario").toString());
+    	}
+    	
+    	if(this.usuarioExterno.getEeEmail() == null && request.getAttribute("eeEmail") != null) {
+    		this.usuarioExterno.setEeEmail(request.getAttribute("eeEmail").toString());
+    	}
+    	
+    	if(this.usuarioExterno.getNmLogin() == null && request.getAttribute("nmLogin") != null) {
+    		this.usuarioExterno.setNmLogin(request.getAttribute("nmLogin").toString());
+    	}
     }
 }
