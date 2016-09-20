@@ -196,6 +196,7 @@ public abstract class AbstractDAO<T> {
 
     public T selectObject(String select, HashMap<String, ?> map) throws Exception {
         try {
+        	
             Query query = em.createQuery(select);
             
             for (String key : map.keySet()) {

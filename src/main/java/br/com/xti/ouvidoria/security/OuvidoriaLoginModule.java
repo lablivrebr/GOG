@@ -96,7 +96,10 @@ public class OuvidoriaLoginModule extends UsernamePasswordLoginModule {
 		boolean logged = Boolean.FALSE;
 		try {
 			
-			String oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
+			String oauthUserIdentity = "";
+			if(request.getSession().getAttribute("oauthUserIdentity") != null) {
+				oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
+			}
 			
 			if (!oauthUserIdentity.isEmpty()) {
 				JSONObject json = new JSONObject(oauthUserIdentity);
