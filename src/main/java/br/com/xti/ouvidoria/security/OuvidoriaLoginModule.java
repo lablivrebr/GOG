@@ -130,17 +130,7 @@ public class OuvidoriaLoginModule extends UsernamePasswordLoginModule {
                 	request.setAttribute("errorMessage", "Usuário inativo");
                 }
             } else {
-            	// Tenta logar pela manifestação (número e senha)
-        		int manifestarionNumber = Integer.parseInt(login);
-	            TbManifestacao manifestation = manifestacaoDAO.getManifestacaoPorNumeroSenha(manifestarionNumber, password);
-	            if (manifestation != null) {
-	            	logged = Boolean.TRUE;
-	            	profile = FuncaoUsuarioEnum.MANIFESTANTE;
-	            	request.setAttribute("loginType", LoginTypeEnum.MANIFESTATION);
-	            	request.setAttribute("manifestation", manifestation);
-	            } else {
-	            	request.setAttribute("errorMessage", "Login ou senha inválidos");
-	            }
+            	logged = this.loginAsManifestante(login, password);
             }
         } catch (Exception e) {
         	System.err.println("Erro ao tentar efetuar login do usuário: " + login);
@@ -150,6 +140,24 @@ public class OuvidoriaLoginModule extends UsernamePasswordLoginModule {
 		
 		return logged;
     }
+	
+	private boolean loginAsManifestante(String login, String password) {
+		try {
+			int manifestarionNumber = Integer.parseInt(login);
+			TbManifestacao manifestation = manifestacaoDAO.getManifestacaoPorNumeroSenha(manifestarionNumber, password);
+			if (manifestation != null) {
+				profile = FuncaoUsuarioEnum.MANIFESTANTE;
+				request.setAttribute("loginType", LoginTypeEnum.MANIFESTATION);
+				request.setAttribute("manifestation", manifestation);
+				request.getSession().setAttribute("isLoginManifestante", Boolean.TRUE);
+				return Boolean.TRUE;
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		request.setAttribute("errorMessage", "Login ou senha inválidos");
+		return Boolean.FALSE;
+	} 
 	
 	
 	@Override
