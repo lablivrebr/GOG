@@ -60,7 +60,9 @@ public class LoginServlet extends HttpServlet {
 		
 		List<String> errors = new ArrayList<String>();
 		try {
-			if(request.getUserPrincipal() == null) {
+			
+			Boolean isLoginManifestante = (Boolean)request.getSession().getAttribute("isLoginManifestante");
+			if(request.getUserPrincipal() == null || isLoginManifestante) {
 				String username = request.getParameter("username");
 				String password = request.getParameter("password");
 				
@@ -75,7 +77,7 @@ public class LoginServlet extends HttpServlet {
 				if(ValidacaoHelper.isNotEmpty(errors)) {
 					throw new Exception("Campos obrigatórios não preenchidos");
 				}
-				
+				request.logout(); 
 				request.login(username, password);
 			}
 			
