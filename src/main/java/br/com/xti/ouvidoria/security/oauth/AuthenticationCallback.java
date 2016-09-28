@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,28 +44,36 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 	@EJB
     private UsuarioDAO usuarioDAO;
 	
-	private static final String CLIENT_ID = "11_4psf5i795ta8sow88gcco4sgkow0kcgcwggs4wog0g84ww8gow";
-	private static final String CLIENT_SECRET = "14nampuvl98g08wwkg0k4cgsws4kwss8c080g00wc04og08cco";
-	private static final String CALLBACK_URI = "/oauth2Callback";
-	private static final String TOKEN_SERVER_URL = "http://id.cultura.gov.br/oauth/v2/token";
-	private static final String AUTHORIZATION_SERVER_URL = "http://id.cultura.gov.br/oauth/v2/auth";
-
-	private static final Iterable<String> SCOPE = Arrays.asList("public_profile;cpf;email;full_name".split(";"));
-	private static final String USER_INFO_URL = "http://id.cultura.gov.br/api/v1/person.json";
-	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	private static String CLIENT_ID;
+	private static String CLIENT_SECRET;
+	private static String CALLBACK_URI;
+	private static String TOKEN_SERVER_URL;
+	private static String AUTHORIZATION_SERVER_URL;
+	private static Iterable<String> SCOPE;
+	private static String USER_INFO_URL;
+	
+	private static JsonFactory JSON_FACTORY = new JacksonFactory();
+	private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
 	AuthorizationCodeFlow objAuthorizationCodeFlow = null;
+	
+	@Override
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+	    CLIENT_ID = context.getInitParameter("CLIENT_ID");
+	    CLIENT_SECRET = context.getInitParameter("CLIENT_SECRET");
+	    CALLBACK_URI = context.getInitParameter("CALLBACK_URI");
+	    TOKEN_SERVER_URL = context.getInitParameter("TOKEN_SERVER_URL");
+	    AUTHORIZATION_SERVER_URL = context.getInitParameter("AUTHORIZATION_SERVER_URL");
+	    SCOPE = Arrays.asList(context.getInitParameter("SCOPE").split(";"));;
+	    USER_INFO_URL = context.getInitParameter("USER_INFO_URL");
+	    
+		super.init();
+	}
 
 	@Override
 	  protected void onSuccess(HttpServletRequest request, HttpServletResponse response, Credential credential)
 	      throws ServletException, IOException {
-		
-		// 1 - Verificar se ja existe um usuário cadastrado com os dados vindos da credetial;
-		// 1. 1 - Se já existir, verificar se a coluna "hasOauthPermission" está preenchida
-		// 1. 2 - Caso não existir, redirecionar para o cadastro de um novo usuário utilizando as informações já existentes para completar o cadastro e preencher a coluna "hasOauthPermission"
-		
-		// senha padrão "PasswordUtils.getMD5(password).toUpperCase()"
 		
 		//PasswordUtils.getMD5("abcd123456").toUpperCase();
 		
@@ -99,15 +108,12 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	  }
 	
-	
-
 	@Override
 	protected void onError(HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
 			throws ServletException, IOException {
-		resp.sendRedirect("/GOG/sniff...");
+		resp.sendRedirect("/GOG/pages/erro/erro.xhtml");
 	}
 
 	@Override
@@ -126,7 +132,7 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 					new NetHttpTransport(), new JacksonFactory(), new GenericUrl(TOKEN_SERVER_URL),
 					new BasicAuthentication(CLIENT_ID, CLIENT_SECRET), CLIENT_ID, AUTHORIZATION_SERVER_URL)
 							.setCredentialDataStore(StoredCredential
-									.getDefaultDataStore(new FileDataStoreFactory(new File("oauth2StorageFolder"))))
+							.getDefaultDataStore(new FileDataStoreFactory(new File("oauth2StorageFolder"))))
 							.setScopes((Collection<String>) SCOPE).build();
 		} catch (TokenResponseException e) {
 			e.printStackTrace();

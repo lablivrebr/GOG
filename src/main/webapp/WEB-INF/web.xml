@@ -8,6 +8,38 @@
 		<param-name>versao</param-name>
 		<param-value>GOG 3.0</param-value>
 	</context-param>
+	
+	<!-- BEGIN OAUTH params -->
+	<context-param>
+		<param-name>CLIENT_ID</param-name>
+		<param-value>11_4psf5i795ta8sow88gcco4sgkow0kcgcwggs4wog0g84ww8gow</param-value>
+	</context-param>
+	<context-param>
+		<param-name>CLIENT_SECRET</param-name>
+		<param-value>14nampuvl98g08wwkg0k4cgsws4kwss8c080g00wc04og08cco</param-value>
+	</context-param>
+	<context-param>
+		<param-name>CALLBACK_URI</param-name>
+		<param-value>/oauth2Callback</param-value>
+	</context-param>
+	<context-param>
+		<param-name>TOKEN_SERVER_URL</param-name>
+		<param-value>http://id.cultura.gov.br/oauth/v2/token</param-value>
+	</context-param>
+	<context-param>
+		<param-name>AUTHORIZATION_SERVER_URL</param-name>
+		<param-value>http://id.cultura.gov.br/oauth/v2/auth</param-value>
+	</context-param>
+	<context-param>
+		<param-name>SCOPE</param-name>
+		<param-value>public_profile;cpf;email;full_name</param-value>
+	</context-param>
+	<context-param>
+		<param-name>USER_INFO_URL</param-name>
+		<param-value>http://id.cultura.gov.br/api/v1/person.json</param-value>
+	</context-param>
+	<!-- END OAUTH params -->
+	
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Production</param-value>
