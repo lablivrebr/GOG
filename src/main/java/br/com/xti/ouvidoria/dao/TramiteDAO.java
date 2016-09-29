@@ -33,7 +33,7 @@ public class TramiteDAO extends AbstractDAO<TbTramite> {
         try {
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("idEncaminhamento", idEncaminhamento);
-            retorno = selectList("SELECT t FROM TbTramite t WHERE t.idEncaminhamento = :idEncaminhamento", map);
+            retorno = selectList("SELECT t FROM TbTramite t WHERE t.idEncaminhamento = :idEncaminhamento order by dttramite asc", map);
         } catch (Exception e) {
             e.printStackTrace();
         }
