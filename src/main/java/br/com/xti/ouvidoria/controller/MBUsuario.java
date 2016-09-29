@@ -92,8 +92,15 @@ public class MBUsuario implements Serializable {
     public List<TbUsuario> getTodosInternos() {
     	List<TbUsuario> list = usuarioDAO.getUsuariosInternos();
     	Collections.sort(list);
+        return list; 
+    }
+    
+    public List<TbUsuario> getTodosInternosOuExternos() {
+    	List<TbUsuario> list = usuarioDAO.getUsuariosInternosOuExternos();
+    	Collections.sort(list);
         return list;
     }
+    
     
     public List<TbUsuario> getTodosUsuariosOuvidor() {
         return usuarioDAO.getUsuarioPorFuncao(FuncaoUsuarioEnum.OUVIDOR);

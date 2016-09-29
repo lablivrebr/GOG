@@ -57,6 +57,23 @@ public class UsuarioDAO extends AbstractDAO<TbUsuario> {
         }
         return listaUsuarios;
     }
+    
+
+    public List<TbUsuario> getUsuariosInternosOuExternos() {
+        List<TbUsuario> listaUsuarios = null;
+        try {
+        	String select = "SELECT t FROM TbUsuario t WHERE t.tpUsuario = :tpUsuarioExterno or t.tpUsuario = :tpUsuarioInterno";
+
+        	HashMap<String, Object> map = new HashMap<>();
+            map.put("tpUsuarioExterno", TipoUsuarioEnum.EXTERNO.getId());
+            map.put("tpUsuarioInterno", TipoUsuarioEnum.INTERNO.getId());
+            
+            listaUsuarios = selectList(select, map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaUsuarios;
+    }
 
     public TbUsuario login(String login, String password, boolean isCriptografedPassword) throws Exception {
         String select = "SELECT t FROM TbUsuario t WHERE t.nmLogin = :nmLogin and t.nmSenha = :nmSenha";
