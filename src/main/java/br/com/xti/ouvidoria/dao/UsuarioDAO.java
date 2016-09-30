@@ -167,4 +167,16 @@ public class UsuarioDAO extends AbstractDAO<TbUsuario> {
         return listaUsuarios;
     }
     
+    public TbUsuario obterPorIdOauth(String idOauth) {
+    	TbUsuario usuario = new TbUsuario();
+        try {
+        	HashMap<String, Object> map = new HashMap<>();
+            map.put("idOauth", idOauth);
+            usuario = getObject("findByIdOauth", map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
+    
 }

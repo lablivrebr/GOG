@@ -40,7 +40,9 @@ import br.com.xti.ouvidoria.model.enums.StatusUsuarioEnum;
     @NamedQuery(name = "TbUsuario.findByNmLogin", query = "SELECT t FROM TbUsuario t WHERE t.nmLogin = :nmLogin"),
     @NamedQuery(name = "TbUsuario.findByNumTelefone", query = "SELECT t FROM TbUsuario t WHERE t.numTelefone = :numTelefone"),
     @NamedQuery(name = "TbUsuario.findByNmSenha", query = "SELECT t FROM TbUsuario t WHERE t.nmSenha = :nmSenha"),
-    @NamedQuery(name = "TbUsuario.findByTpFuncao", query = "SELECT t FROM TbUsuario t WHERE t.tpFuncao = :tpFuncao")})
+    @NamedQuery(name = "TbUsuario.findByTpFuncao", query = "SELECT t FROM TbUsuario t WHERE t.tpFuncao = :tpFuncao"),
+	@NamedQuery(name = "TbUsuario.findByIdOauth", query = "SELECT t FROM TbUsuario t WHERE t.idOauth = :idOauth")})
+
 public class TbUsuario implements Serializable, Comparable<TbUsuario> {
     private static final long serialVersionUID = 1L;
     
@@ -90,6 +92,11 @@ public class TbUsuario implements Serializable, Comparable<TbUsuario> {
 	@NotNull
 	@Column(name = "tpFuncao")
 	private String tpFuncao;
+	
+	@Basic(optional = true)
+	@Size(max = 255)
+	@Column(name = "idOauth")
+	private String idOauth;
 	
 	@OneToMany(mappedBy = "idUsuario")
 	private Collection<TbUsuarioxPerfil> tbUsuarioxPerfilCollection;
@@ -216,6 +223,14 @@ public class TbUsuario implements Serializable, Comparable<TbUsuario> {
     public void setTpFuncao(String tpFuncao) {
         this.tpFuncao = tpFuncao;
     }
+    
+    public String getIdOauth() {
+		return idOauth;
+	}
+
+	public void setIdOauth(String idOauth) {
+		this.idOauth = idOauth;
+	}
 
     public Collection<TbUsuarioxPerfil> getTbUsuarioxPerfilCollection() {
         return tbUsuarioxPerfilCollection;

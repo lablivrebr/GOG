@@ -87,20 +87,31 @@ public class AuthenticationCallback extends AbstractAuthorizationCodeCallbackSer
 			
 			request.getSession().setAttribute("oauthUserIdentity", userIdentity);
 			
-			String oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
+			//String oauthUserIdentity = request.getSession().getAttribute("oauthUserIdentity").toString();
 			
-			JSONObject json = new JSONObject(oauthUserIdentity);
-			String email = json.get("email").toString();
+			JSONObject objJson = new JSONObject(userIdentity);
+			String email = objJson.get("email").toString();
+			String idOauth = objJson.get("id").toString();
 			
-			TbUsuario objTbUsuario = usuarioDAO.findByEmail(email);
+			TbUsuario objTbUsuarioOauth = usuarioDAO.obterPorIdOauth(idOauth);
+			TbUsuario objTbUsuarioEmail = usuarioDAO.findByEmail(email);
 			
-			if(objTbUsuario != null) {
-				request.login(objTbUsuario.getNmUsuario(), objTbUsuario.getNmSenha());
+			if(objTbUsuarioEmail != null) {
+				
+				if(objTbUsuarioOauth == null) {
+					objTbUsuarioEmail.setIdOauth(idOauth);
+					usuarioDAO.edit(objTbUsuarioEmail);
+				}
+				
+				request.login(objTbUsuarioEmail.getNmUsuario(), objTbUsuarioEmail.getNmSenha());
+				response.sendRedirect("/GOG/pages/manifestacao/listarmanifestacoes.xhtml");
+			} else if(objTbUsuarioOauth != null) {
+				request.login(objTbUsuarioOauth.getNmUsuario(), objTbUsuarioOauth.getNmSenha());
 				response.sendRedirect("/GOG/pages/manifestacao/listarmanifestacoes.xhtml");
 			} else {
-				request.setAttribute("nmUsuario", json.get("full_name").toString());
-				request.setAttribute("nmLogin", json.get("username").toString());
-				request.setAttribute("eeEmail", email);
+				request.setAttribute("nmUsuario", objJson.get("full_name").toString());
+				request.setAttribute("nmLogin", objJson.get("username").toString());
+				request.setAttribute("eeEmail", objJson.get("email").toString());
 				
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/externo/cadastrarManifestante.xhtml");
 				dispatcher.forward(request, response);
